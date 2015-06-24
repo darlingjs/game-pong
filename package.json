@@ -4,6 +4,7 @@
   "description": "Example of the pong game for DarlingJs game engine",
   "main": "index.html",
   "scripts": {
+    "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

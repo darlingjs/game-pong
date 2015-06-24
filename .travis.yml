@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- '0.12'
+before_install:
+- npm install gulpjs/gulp-cli#4.0 -g
+after_success:
+- npm run build
+- bash ./deploy.sh
+env:
+  global:
+  - GH_REF: github.com/darlingjs/game-pong.git
+  - secure: GyAUsks6ZDCHrSSpQnUZOPCyyBugwtlho2ZTHPlevCOoW2fcJKHRBe1v99AdLKX9tt3C5VTZmq2TB4W0dH0ErU+n83tJyDt5lEft8m1bNLIS3247XBaIh0pxwBRcdJGDHhuuNTMLwmGuEk+7+WLBulpiFGBKoyCjuSwUJjnMFpD/y6dW4oxgVj6h7MFQVlkfciFkvn05+9EyhdemwEnLLurTteNqgBGAlSUoz2TZUjo0HrCxjaxTMyKdoD6lHl7UYeCu2B4Iz7HA2csVp+pwIMv8dOKfhwcVIQl2M20q4ivHe3HFgu/aqs79rkdEJQm9YzJPJRyjPfQSGa3fb6AktefSbTXj680K5RJmdukxuBwwIahDcGQygpOJ2ocDzaeuwppneQQzC40jAVcY6RlqcGTTMr4i/8umyLaj6yw3mpxFKRXckr5/ChXRof49lk2U2YJxoXGiL3JF5o62WXBoNcAkNw1FE3pG4msaz+zAcXfG5b2GMv8Hu1SUQXGLTbEwCLkj0KWtXH/2GL5iqjkPlQ2oQ7L15d2t4u87xBdP/v7secvaoFUFDsQg1qAzJzg2cH6v4LHu2HEIMpD1EhaJgEogRE6xedF0yX1+pc4Sg1SO1r0JwsLDpTvJR6MsiLe55rUxYEwKKq3W5c6j9WdgfhzU00D5ozNmns4WATS3dww=
