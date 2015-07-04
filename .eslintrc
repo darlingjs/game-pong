@@ -1,0 +1,25 @@
+{
+  "parser": "babel-eslint",
+  "plugins": [
+    "react"
+  ],
+  "ecmaFeatures": {
+    "jsx": true
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jasmine": true,
+    "node": true
+  },
+  "globals": {
+    "jest": true
+  },
+  "rules": {
+    "strict": 0,
+    "indent": [1, 2],
+    "quotes": [2, "single"],
+
+    "react/jsx-no-undef": 1
+  }
+}
