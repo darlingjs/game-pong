@@ -13,7 +13,7 @@ var dom = require('./dom');
 var gameplay = require('./gameplay');
 var physics = require('./physics');
 
-var animationFrame = require('darling-liveOnAnimationFrame');
+var animationFrame = require('darlingjs-live-on-animation-frame');
 var aspectRatio = 2,
   /**
    * window.innerWidth and window.innerHeight === 0 inside iFrame at 1st moment.
@@ -55,7 +55,7 @@ var w = darling.world('pong')
     width: width,
     height: height,
 
-    //TODO: should split system in system that catch current possition of ball
+    //TODO: should split system in system that catch current position of ball
     //and regular code that update scores in DOM
 
     //target DOM element for player 1 score output
