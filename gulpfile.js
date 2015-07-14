@@ -1,5 +1,6 @@
 var del = require('del');
 var gulp = require('gulp');
+var gulpif = require('gulp-if');
 var browserify = require('gulp-browserify');
 var debug = require('gulp-debug');
 var less = require('gulp-less');
@@ -62,12 +63,13 @@ function styles() {
 }
 
 function scripts() {
+  var debugMode = process.env.NODE_ENV !== 'production';
   return gulp.src(paths.scripts.source)
     .pipe(sourcemaps.init())
     .pipe(browserify({
-      //debug : !gulp.env.production
+      debug: debugMode
     }))
-    .pipe(uglify())
+    .pipe(gulpif(!debugMode, uglify()))
     .pipe(sourcemaps.write('.'))
     .pipe(debug({title: 'scripts:'}))
     .pipe(gulp.dest(paths.scripts.output.path));

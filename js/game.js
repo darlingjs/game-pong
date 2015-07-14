@@ -46,7 +46,7 @@ var w = darling.world('pong')
   .pipe(control.system())
   .pipe(control.moveUp())
   .pipe(control.moveDown())
-  .pipe(physics.impulseUpdate({
+  .pipe(physics.impulse({
     width: width,
     height: height
   }))
@@ -64,7 +64,9 @@ var w = darling.world('pong')
     //target DOM element for player 2 score output
     player2TargetElement: '#playerScore2'
   }))
-  .live(animationFrame);
+  .live(animationFrame({
+    autostart: true
+  }));
 
 
 //settle entities
@@ -74,7 +76,7 @@ if (paddleHeight > 100) {
   paddleHeight = 100;
 }
 
-w.settle('LeftPaddle', {
+w.entity('LeftPaddle', {
   domView: {color: '#ED4501'},
   ng2D: {x: 20, y: height / 2},
   ng2DSize: {width: 10, height: paddleHeight},
@@ -88,7 +90,7 @@ w.settle('LeftPaddle', {
   }
 });
 
-w.settle('RightPaddle', {
+w.entity('RightPaddle', {
   domView: {color: '#BBD401'},
   ng2D: {x: width - 20, y: height / 2},
   ng2DSize: {width: 10, height: paddleHeight},
@@ -113,7 +115,7 @@ if (angle < Math.PI / 2) {
   angle += Math.PI / 4;
 }
 
-w.settle('ball', {
+w.entity('ball', {
   domView: {
     color: 'rgb(255,255,255)'
   },

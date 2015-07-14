@@ -49,7 +49,7 @@ module.exports = darling.system({
   require: ['ng2D', 'ng2DSize', 'domView'],
 
   //like react
-  getInitState: function () {
+  getInititalState: function () {
     return {
       target: null,
 
@@ -70,9 +70,9 @@ module.exports = darling.system({
    * System added to the World
    */
   added: function () {
-    var stageElement = document.querySelector(this.target);
+    var stageElement = document.querySelector(this.state.target);
     if (!stageElement) {
-      throw new Error('can\'t find ' + id + ' as stage for dom renderer')
+      throw new Error('can\'t find ' + this.state.target + ' as stage for dom renderer')
     }
 
     //fit stage DIV element to the size
@@ -98,9 +98,9 @@ module.exports = darling.system({
   /**
    * Add new entity to the System
    */
-  addEntity: function ($entity) {
-    var domView = $entity.domView,
-      ng2DSize = $entity.ng2DSize;
+  addEntity: function (entity) {
+    var domView = entity.domView,
+      ng2DSize = entity.ng2DSize;
 
     //create DIV for each entity
     var element = document.createElement('div');
@@ -112,22 +112,22 @@ module.exports = darling.system({
     element.style.position = 'absolute';
 
     this.state.stageElement.appendChild(element);
-    this.state.updatePosition(element, $entity.ng2D, $entity.ng2DSize);
+    this.state.updatePosition(element, entity.ng2D, entity.ng2DSize);
 
     domView.element = element;
 
     //VS
 
-    domView.setState({
-      element: element
-    });
+    //domView.setState({
+    //  element: element
+    //});
   },
 
   /**
    * Remove entity from the System
    */
-  remoteEntity: function ($entity) {
-    var domView = $entity.domView;
+  remoteEntity: function (entity) {
+    var domView = entity.domView;
     this.stageElement.removeChild(domView.element);
     domView.element = null;
   },
@@ -135,7 +135,7 @@ module.exports = darling.system({
   /**
    * Update position of DIV elements each tick
    */
-  update: function ($entity) {
-    this.updatePosition($entity.domView.element, $entity.ng2D, $entity.ng2DSize);
+  updateOne: function (entity) {
+    this.state.updatePosition(entity.domView.element, entity.ng2D, entity.ng2DSize);
   }
 });

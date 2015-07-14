@@ -23,11 +23,11 @@ darling.c('impulse', {
  * Use for apply impulse to the ball on every frame.
  * And reflect on the borders
  */
-m.impulseUpdate = darling.system({
+m.impulse = darling.system({
   //deals with entity, that hold:
   require: ['impulse', 'ng2D', 'ng2DSize'],
 
-  getInitState: function () {
+  getInitialState: function () {
     return {
       width: 400,
       height: 300
@@ -38,10 +38,10 @@ m.impulseUpdate = darling.system({
    * Each World tick, we recalculate position
    * and check Worlds boundaries.
    */
-  update: function($entity) {
-    var ng2D = $entity.ng2D,
-      ng2DSize = $entity.ng2DSize,
-      impulse = $entity.impulse,
+  updateOne: function(entity) {
+    var ng2D = entity.ng2D,
+      ng2DSize = entity.ng2DSize,
+      impulse = entity.impulse,
       halfWidth = 0.5 * ng2DSize.width,
       halfHeight = 0.5 * ng2DSize.height;
 
@@ -60,8 +60,8 @@ m.impulseUpdate = darling.system({
     if (ng2D.y <= halfHeight) {
       ng2D.y = halfHeight;
       impulse.y = -impulse.y;
-    } else if (ng2D.y > this.height - halfHeight) {
-      ng2D.y = this.height - halfHeight;
+    } else if (ng2D.y > this.state.height - halfHeight) {
+      ng2D.y = this.state.height - halfHeight;
       impulse.y = -impulse.y;
     }
   }
@@ -89,36 +89,27 @@ m.collision = darling.system({
       edgePart: 0.1,
 
       //@private
-      paddles: null,
+      paddles: new List('paddles'),
       //@private
-      balls: null
+      balls: new List('balls')
     };
-  },
-
-  /**
-   * Create lists of entities on the System has added to the World
-   */
-  $added: function() {
-    //TODO: setState
-    this.state.paddles = new List('paddles');
-    this.state.balls = new List('balls');
   },
 
   /**
    * When entity has added to the System we're rearrange it the proper list
    *
-   * @param $entity
+   * @param entity
    */
-  addEntity: function($entity) {
-    var solid = $entity.solid;
+  addEntity: function(entity) {
+    var solid = entity.solid;
     if (solid.type === 'ball') {
-      this.state.balls.add($entity);
+      this.state.balls.add(entity);
     } else if (solid.type === 'left-paddle') {
       solid.left = true;
-      this.state.paddles.add($entity);
+      this.state.paddles.add(entity);
     } else if (solid.type === 'right-paddle') {
       solid.left = false;
-      this.state.paddles.add($entity);
+      this.state.paddles.add(entity);
     } else {
       throw new Error('solid type ' + solid.type + ' undefined');
     }
@@ -127,14 +118,14 @@ m.collision = darling.system({
   /**
    * On entity removed from the System, it also removed entity from list
    *
-   * @param $entity
+   * @param entity
    */
-  removeEntity: function($entity) {
-    var solid = $entity.solid;
+  removeEntity: function(entity) {
+    var solid = entity.solid;
     if (solid.type === 'ball') {
-      this.state.balls.remove($entity);
+      this.state.balls.remove(entity);
     } else if (solid.type === 'paddle') {
-      this.state.paddles.remove($entity);
+      this.state.paddles.remove(entity);
     } else {
       throw new Error('solid type ' + solid.type + ' undefined');
     }
@@ -144,11 +135,11 @@ m.collision = darling.system({
    * On World tick, we're checking collision between paddles and balls.
    * And if got one - simulate bounce.
    */
-  update: function() {
-    var ballNode = this.state.balls.$head;
+  updateAll: function() {
+    var ballNode = this.state.balls.head;
     while(ballNode) {
       var ballEntity = ballNode.instance;
-      var paddleNode = this.state.paddles.$head;
+      var paddleNode = this.state.paddles.head;
       while(paddleNode) {
         var paddleEntity = paddleNode.instance;
         if (this.checkCollision(ballEntity, paddleEntity)) {
@@ -192,9 +183,9 @@ m.collision = darling.system({
             ballEntity.ng2D.x = paddleEntity.ng2D.x - (paddleEntity.ng2DSize.width + ballEntity.ng2DSize.width) / 2;
           }
         }
-        paddleNode = paddleNode.$next;
+        paddleNode = paddleNode.next;
       }
-      ballNode = ballNode.$next;
+      ballNode = ballNode.next;
     }
   },
 
@@ -258,3 +249,5 @@ m.collision = darling.system({
     return (left1 < right2 && left2 < right1 && top1 < bottom2 && top2 < bottom1);
   }
 });
+
+module.exports = m;

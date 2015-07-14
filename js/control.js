@@ -55,7 +55,10 @@ m.system = darling.system({
    * System added to the World
    */
   added: function() {
-    this.keyToEntities.length = 256;
+    this.state.keyToEntities.length = 256;
+
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
 
     document.addEventListener('keydown', this.onKeyDown);
     document.addEventListener('keyup', this.onKeyUp);
@@ -73,21 +76,21 @@ m.system = darling.system({
   /**
    * Entity added to the System
    *
-   * @param $entity
+   * @param entity
    */
-  addEntity: function($entity) {
-    this.watchKey($entity.control.up, $entity);
-    this.watchKey($entity.control.down, $entity);
+  addEntity: function(entity) {
+    this.watchKey(entity.control.up, entity);
+    this.watchKey(entity.control.down, entity);
   },
 
   /**
    * Entity removed from the System
    *
-   * @param $entity
+   * @param entity
    */
-  removeEntity: function($entity) {
-    this.stopWatchingKey($entity.control.up, $entity);
-    this.stopWatchingKey($entity.control.down, $entity);
+  removeEntity: function(entity) {
+    this.stopWatchingKey(entity.control.up, entity);
+    this.stopWatchingKey(entity.control.down, entity);
   },
 
   /**
@@ -95,14 +98,14 @@ m.system = darling.system({
    *
    * @private
    * @param keyCode
-   * @param $entity
+   * @param entity
    */
-  watchKey: function(keyCode, $entity) {
-    if (!this.keyToEntities[keyCode]) {
-      this.keyToEntities[keyCode] = [];
+  watchKey: function(keyCode, entity) {
+    if (!this.state.keyToEntities[keyCode]) {
+      this.state.keyToEntities[keyCode] = [];
     }
 
-    this.keyToEntities[keyCode].push($entity);
+    this.state.keyToEntities[keyCode].push(entity);
   },
 
   /**
@@ -110,11 +113,11 @@ m.system = darling.system({
    *
    * @private
    * @param keyCode
-   * @param $entity
+   * @param entity
    */
-  stopWatchingKey: function(keyCode, $entity) {
-    var entities = this.keyToEntities[keyCode];
-    var index = entities.indexOf($entity);
+  stopWatchingKey: function(keyCode, entity) {
+    var entities = this.state.keyToEntities[keyCode];
+    var index = entities.indexOf(entity);
     entities.splice(index, 1);
   },
 
@@ -126,19 +129,19 @@ m.system = darling.system({
    * @returns {boolean}
    */
   onKeyDown: function(e) {
-    var entities = this.keyToEntities[e.keyCode];
+    var entities = this.state.keyToEntities[e.keyCode];
     if (entities && entities.length > 0) {
       for(var i = 0, count = entities.length; i < count; i++) {
         var entity = entities[i],
           control = entity.control;
         if (control.down === e.keyCode) {
-          entity.$add('moveDown', {
+          entity.add('moveDown', {
             limit: control.maxY,
             speed: control.speed
           });
         }
         if (entity.control.up === e.keyCode) {
-          entity.$add('moveUp', {
+          entity.add('moveUp', {
             limit: control.minY,
             speed: control.speed
           });
@@ -150,15 +153,15 @@ m.system = darling.system({
   },
 
   onKeyUp: function(e) {
-    var entities = this.keyToEntities[e.keyCode];
+    var entities = this.state.keyToEntities[e.keyCode];
     if (entities && entities.length > 0) {
       for(var i = 0, count = entities.length; i < count; i++) {
         var entity = entities[i];
         if (entity.control.down === e.keyCode) {
-          entity.$remove('moveDown');
+          entity.remove('moveDown');
         }
         if (entity.control.up === e.keyCode) {
-          entity.$remove('moveUp');
+          entity.remove('moveUp');
         }
       }
     }
@@ -175,13 +178,13 @@ m.moveUp = darling.system({//$s('controlMoveUp', {
   /**
    * Update each entity from the System on the World tick
    */
-  update: function($entity) {
-    if ($entity.ng2D.y <= $entity.moveUp.limit) {
-      $entity.$remove('moveUp');
+  updateOne: function(entity) {
+    if (entity.ng2D.y <= entity.moveUp.limit) {
+      entity.remove('moveUp');
       return;
     }
 
-    $entity.ng2D.y -= $entity.moveUp.speed;
+    entity.ng2D.y -= entity.moveUp.speed;
   }
 });
 
@@ -195,12 +198,12 @@ m.moveDown = darling.system({
   /**
    * Update each entity from the System on the World tick
    */
-  update: function($entity) {
-    if ($entity.ng2D.y >= $entity.moveDown.limit) {
-      $entity.$remove('moveDown');
+  updateOne: function(entity) {
+    if (entity.ng2D.y >= entity.moveDown.limit) {
+      entity.remove('moveDown');
       return;
     }
-    $entity.ng2D.y += $entity.moveDown.speed;
+    entity.ng2D.y += entity.moveDown.speed;
   }
 });
 

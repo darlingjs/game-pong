@@ -18,7 +18,7 @@ module.exports = darling.system({
   //deal with entity that holds components:
   require: ['ball', 'ng2D', 'ng2DSize'],
 
-  getInitState: function() {
+  getInitialState: function() {
     return {
       width: 400,
       height: 300,
@@ -45,12 +45,12 @@ module.exports = darling.system({
     element = document.querySelector(this.state.player1TargetElement);
     //TODO: setState
     this.state.player1Text = document.createTextNode('');
-    element.appendChild(this.player1Text);
+    element.appendChild(this.state.player1Text);
 
-    element = document.querySelector(this.player2TargetElement);
+    element = document.querySelector(this.state.player2TargetElement);
     //TODO: setState
     this.state.player2Text = document.createTextNode('');
-    element.appendChild(this.player2Text);
+    element.appendChild(this.state.player2Text);
 
     this.validatePlayersState();
   },
@@ -60,16 +60,16 @@ module.exports = darling.system({
    * And if it slipped away. Set scores for the player.
    * And set ball back.
    */
-  update: function($entity) {
-    if ($entity.ng2D.x < 0.5 * $entity.ng2DSize.width) {
+  updateOne: function(entity) {
+    if (entity.ng2D.x < 0.5 * entity.ng2DSize.width) {
       //TODO: setState
       this.state.player1Score++;
-      this.setBallToDefaultPosition($entity);
+      this.setBallToDefaultPosition(entity);
       this.validatePlayersState();
-    } else if ($entity.ng2D.x > this.width - 0.5 * $entity.ng2DSize.width) {
+    } else if (entity.ng2D.x > this.state.width - 0.5 * entity.ng2DSize.width) {
       //TODO: setState
       this.state.player2Score++;
-      this.setBallToDefaultPosition($entity);
+      this.setBallToDefaultPosition(entity);
       this.validatePlayersState();
     }
   },
@@ -81,7 +81,7 @@ module.exports = darling.system({
    * @param ball
    */
   setBallToDefaultPosition: function(ball) {
-    ball.ng2D.x = this.width / 2;
+    ball.ng2D.x = this.state.width / 2;
     ball.impulse.y += 3 * (0.5 - Math.random());
   },
 

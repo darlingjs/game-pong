@@ -29,6 +29,7 @@
     "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.5.2",
     "gulp-debug": "^2.0.1",
+    "gulp-if": "^1.2.5",
     "gulp-less": "^3.0.3",
     "gulp-plumber": "^1.0.1",
     "gulp-processhtml": "^1.1.0",
@@ -39,6 +40,6 @@
   },
   "dependencies": {
     "darlingjs": "darlingjs/darlingjs#1.0",
-    "darlingjs-live-on-animation-frame": "^1.0.1"
+    "darlingjs-live-on-animation-frame": "darlingjs/darlingjs-live-on-animation-frame#1.0"
   }
 }
